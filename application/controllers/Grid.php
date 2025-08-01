@@ -13,4 +13,16 @@ class Grid extends CI_Controller {
         $data['products'] = $products;
         $this->load->view('home/grid_view', $data);
     }
+    
+    public function get_json() {
+    $json_path = FCPATH . 'data/products.json';
+    $products = [];
+    if (file_exists($json_path)) {
+        $products = json_decode(file_get_contents($json_path), true);
+    }
+    header('Content-Type: application/json');
+    echo json_encode($products);
+}
+
+
 }
