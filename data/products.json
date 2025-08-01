@@ -1,0 +1,122 @@
+[
+	{
+		"id": "1",
+		"name": "Hot Chocolate",
+		"type": "Chocolate Beverage",
+		"calories": "370",
+		"totalfat": "16g",
+		"protein": "14g"
+	},
+	{
+		"id": "2",
+		"name": "Peppermint Hot Chocolate",
+		"type": "Chocolate Beverage",
+		"calories": "440",
+		"totalfat": "16g",
+		"protein": "13g"
+	},
+	{
+		"id": "3",
+		"name": "Salted Caramel Hot Chocolate",
+		"type": "Chocolate Beverage",
+		"calories": "450",
+		"totalfat": "16g",
+		"protein": "13g"
+	},
+	{
+		"id": "4",
+		"name": "White Hot Chocolate",
+		"type": "Chocolate Beverage",
+		"calories": "420",
+		"totalfat": "16g",
+		"protein": "12g"
+	},
+	{
+		"id": "5",
+		"name": "Caffe Americano",
+		"type": "Espresso Beverage",
+		"calories": "15",
+		"totalfat": "0g",
+		"protein": "1g"
+	},
+	{
+		"id": "6",
+		"name": "Caffe Latte",
+		"type": "Espresso Beverage",
+		"calories": "190",
+		"totalfat": "7g",
+		"protein": "12g"
+	},
+	{
+		"id": "7",
+		"name": "Caffe Mocha",
+		"type": "Espresso Beverage",
+		"calories": "330",
+		"totalfat": "15g",
+		"protein": "13g"
+	},
+	{
+		"id": "8",
+		"name": "Cappuccino",
+		"type": "Espresso Beverage",
+		"calories": "120",
+		"totalfat": "4g",
+		"protein": "8g"
+	},
+	{
+		"id": "9",
+		"name": "Caramel Brulee Latte",
+		"type": "Espresso Beverage",
+		"calories": "420",
+		"totalfat": "9g",
+		"protein": "8g"
+	},
+	{
+		"id": "10",
+		"name": "Caramel Macchiato",
+		"type": "Espresso Beverage",
+		"calories": "240",
+		"totalfat": "11g",
+		"protein": "10g"
+	},
+	{
+		"id": "11",
+		"name": "Peppermint Hot Chocolate",
+		"type": "Espresso Beverage",
+		"calories": "440",
+		"totalfat": "10g",
+		"protein": "13g"
+	},
+	{
+		"id": "12",
+		"name": "Cinnamon Dolce Latte",
+		"type": "Espresso Beverage",
+		"calories": "260",
+		"totalfat": "6g",
+		"protein": "10g"
+	},
+	{
+		"id": "13",
+		"name": "Eggnog Latte",
+		"type": "Espresso Beverage",
+		"calories": "460",
+		"totalfat": "16g",
+		"protein": "13g"
+	},
+	{
+		"id": "14",
+		"name": "Espresso",
+		"type": "Espresso Beverage",
+		"calories": "5",
+		"totalfat": "1g",
+		"protein": "1g"
+	},
+	{
+		"id": "15",
+		"name": "Espresso Con Panna",
+		"type": "Espresso Beverage",
+		"calories": "30",
+		"totalfat": "1g",
+		"protein": "0g"
+	}
+]
