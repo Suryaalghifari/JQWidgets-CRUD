@@ -43,7 +43,7 @@ class Api extends CI_Controller
         }
     }
 
-    public function products_update($id = null)// api untuk update produk berdasarkan ID
+    public function products_update($id = null) // api untuk update produk berdasarkan ID
     {
         $data = json_decode(file_get_contents('php://input'), true); 
 
@@ -62,6 +62,19 @@ class Api extends CI_Controller
             echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Gagal update data']);
+        }
+    }
+    public function products_delete($id = null)
+    {
+        if (!$id) {
+            echo json_encode(['success' => false, 'message' => 'ID wajib ada']);
+            return;
+        }
+        $deleted = $this->Product_model->delete($id);
+        if ($deleted) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Gagal hapus data']);
         }
     }
 

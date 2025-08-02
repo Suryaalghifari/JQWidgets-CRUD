@@ -8,7 +8,7 @@ class Product_model extends CI_Model
         return $this->db->get('products')->result_array();
     }
 
-    public function insert($data) // model untuk tambah produk baru
+    public function insert($data) // model untuk add produk baru
     {
     unset($data['id']);
 
@@ -17,7 +17,7 @@ class Product_model extends CI_Model
     $data['unit_price']  = isset($data['unit_price']) && is_numeric($data['unit_price']) ? intval($data['unit_price']) : 0;
     $data['total_price'] = isset($data['total_price']) && is_numeric($data['total_price']) ? intval($data['total_price']) : 0;
 
-    // Filter hanya field yang ada di tabel
+    
     $allowed = ['name', 'type', 'calories', 'totalfat', 'protein', 'quantity', 'unit_price', 'total_price'];
     $insertData = array_intersect_key($data, array_flip($allowed));
 
@@ -26,9 +26,9 @@ class Product_model extends CI_Model
     }
 
     public function update($id, $data) { //model untuk update produk
-        unset($data['id']); // Id tidak boleh di-update
+        unset($data['id']); 
 
-        // Validasi & konversi field int (konsisten dengan insert)
+        
         $data['quantity']    = isset($data['quantity']) && is_numeric($data['quantity']) ? intval($data['quantity']) : 0;
         $data['unit_price']  = isset($data['unit_price']) && is_numeric($data['unit_price']) ? intval($data['unit_price']) : 0;
         $data['total_price'] = $data['quantity'] * $data['unit_price'];
@@ -40,5 +40,10 @@ class Product_model extends CI_Model
         return $this->db->update('products', $updateData);
     }
 
+    public function delete($id) // model untuk hapus produk
+    {
+        $this->db->where('id', $id);
+        return $this->db->delete('products');
+    }
 
 }

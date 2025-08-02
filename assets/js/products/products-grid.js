@@ -13,7 +13,7 @@ $(function () {
 			{ name: "unit_price", type: "string" },
 			{ name: "total_price", type: "string" },
 		],
-		url: base_url + "index.php/api/products_get", // API untuk ambil data produk
+		url: base_url + "index.php/api/products_get",
 	};
 
 	var dataAdapter = new $.jqx.dataAdapter(source);
@@ -27,13 +27,16 @@ $(function () {
 		filterable: true,
 		editable: true,
 		columnsresize: true,
-		selectionmode: "singlecell",
+		selectionmode: "checkbox", // multi select
 		showtoolbar: true,
 		rendertoolbar: function (toolbar) {
 			var container = $("<div style='margin: 5px;'></div>");
 			var addButton = $("<button>Tambah Data</button>");
+			var deleteButton = $("<button>Hapus Data</button>");
 			toolbar.append(container);
 			container.append(addButton);
+			container.append(deleteButton);
+
 			addButton.on("click", function () {
 				var newrow = {
 					name: "",
@@ -50,7 +53,66 @@ $(function () {
 				var lastrow = datainfo.rowscount - 1;
 				$("#jqxgrid").jqxGrid("begincelledit", lastrow, "name");
 			});
+
+			deleteButton.on("click", function () {
+				var selectedIndexes = $("#jqxgrid").jqxGrid("getselectedrowindexes");
+				if (!selectedIndexes.length) {
+					alert("Pilih data yang mau dihapus (centang di kiri)!");
+					return;
+				}
+
+				// Ambil semua id yang valid
+				var idsToDelete = [];
+				selectedIndexes.forEach(function (idx) {
+					var rowdata = $("#jqxgrid").jqxGrid("getrowdata", idx);
+					if (rowdata && rowdata.id) idsToDelete.push(rowdata.id);
+				});
+
+				if (!idsToDelete.length) {
+					alert("Tidak ada data valid untuk dihapus!");
+					return;
+				}
+
+				if (confirm("Yakin hapus " + idsToDelete.length + " data ini?")) {
+					var successCount = 0,
+						failCount = 0;
+					idsToDelete.forEach(function (id, idx) {
+						$.ajax({
+							url: base_url + "index.php/api/products_delete/" + id, // api untuk hapus produk
+							type: "DELETE",
+							dataType: "json",
+							success: function (response) {
+								if (response.success) successCount++;
+								else failCount++;
+								// Refresh setelah request terakhir
+								if (idx === idsToDelete.length - 1) {
+									$("#jqxgrid").jqxGrid("updatebounddata");
+									alert(
+										successCount +
+											" data berhasil dihapus, " +
+											failCount +
+											" gagal."
+									);
+								}
+							},
+							error: function () {
+								failCount++;
+								if (idx === idsToDelete.length - 1) {
+									$("#jqxgrid").jqxGrid("updatebounddata");
+									alert(
+										successCount +
+											" data berhasil dihapus, " +
+											failCount +
+											" gagal."
+									);
+								}
+							},
+						});
+					});
+				}
+			});
 		},
+
 		columns: [
 			{ text: "Name", datafield: "name", width: 200 },
 			{ text: "Type", datafield: "type", width: 180 },

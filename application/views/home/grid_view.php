@@ -12,6 +12,7 @@
     <script src="<?= base_url('assets/js/jqwidgets/jqxmenu.js') ?>"></script>
     <script src="<?= base_url('assets/js/jqwidgets/jqxlistbox.js') ?>"></script>
     <script src="<?= base_url('assets/js/jqwidgets/jqxdropdownlist.js') ?>"></script>
+    <script src="<?= base_url('assets/js/jqwidgets/jqxcheckbox.js') ?>"></script> <!-- ini WAJIB! -->
     <script src="<?= base_url('assets/js/jqwidgets/jqxgrid.js') ?>"></script>
     <script src="<?= base_url('assets/js/jqwidgets/jqxgrid.selection.js') ?>"></script>
     <script src="<?= base_url('assets/js/jqwidgets/jqxgrid.columnsresize.js') ?>"></script>
