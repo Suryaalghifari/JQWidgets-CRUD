@@ -21,14 +21,10 @@ class Api extends CI_Controller
         echo json_encode($products);
     }
 
-    public function products_add()
+    public function products_add() // api untuk tambah produk baru
     {
         $data = $this->input->post();
-
-        // --- Daftar field yang wajib diisi ---
         $required = ['name', 'type', 'calories', 'totalfat', 'protein', 'quantity', 'unit_price'];
-
-        // --- Loop validasi semua field wajib ---
         foreach ($required as $field) {
             if (empty($data[$field]) && $data[$field] !== "0") {
                 echo json_encode([
@@ -39,12 +35,33 @@ class Api extends CI_Controller
             }
         }
 
-        // --- Insert ke database ---
         $id = $this->Product_model->insert($data);
         if ($id) {
             echo json_encode(['success' => true, 'id' => $id]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Gagal insert data']);
+        }
+    }
+
+    public function products_update($id = null)// api untuk update produk berdasarkan ID
+    {
+        $data = json_decode(file_get_contents('php://input'), true); 
+
+        if (!$id) {
+            echo json_encode(['success' => false, 'message' => 'ID wajib ada']);
+            return;
+        }
+
+        if (!$data || !is_array($data)) {
+            echo json_encode(['success' => false, 'message' => 'Data kosong, tidak ada yang diupdate']);
+            return;
+        }
+
+        $updated = $this->Product_model->update($id, $data);
+        if ($updated) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Gagal update data']);
         }
     }
 
