@@ -42,28 +42,84 @@ $(function () {
 			deleteButton.on("click", handleDeleteRows);
 		},
 		columns: [
-			{ text: "Name", datafield: "name", width: 200 },
-			{ text: "Type", datafield: "type", width: 180 },
-			{ text: "Calories", datafield: "calories", width: 80 },
-			{ text: "Total Fat", datafield: "totalfat", width: 80 },
-			{ text: "Protein", datafield: "protein", width: 80 },
-			{ text: "Qty", datafield: "quantity", width: 80 },
+			{
+				text: "No",
+				datafield: "no",
+				width: 50,
+				editable: false,
+				align: "center",
+				textalign: "center",
+				cellsrenderer: function (row) {
+					return `<div style="text-align:center; width:100%;">${row + 1}</div>`;
+				},
+			},
+
+			{
+				text: "Name",
+				datafield: "name",
+				width: 200,
+				align: "center",
+				cellsalign: "center",
+			},
+			{
+				text: "Type",
+				datafield: "type",
+				width: 180,
+				align: "center",
+				cellsalign: "center",
+			},
+			{
+				text: "Calories",
+				datafield: "calories",
+				width: 80,
+				align: "center",
+				cellsalign: "center",
+			},
+			{
+				text: "Total Fat",
+				datafield: "totalfat",
+				width: 80,
+				align: "center",
+				cellsalign: "center",
+			},
+			{
+				text: "Protein",
+				datafield: "protein",
+				width: 80,
+				align: "center",
+				cellsalign: "center",
+			},
+			{
+				text: "Qty",
+				datafield: "quantity",
+				width: 80,
+				align: "center",
+				cellsalign: "center",
+			},
 			{
 				text: "Unit Price",
 				datafield: "unit_price",
 				width: 100,
+				align: "center", // Header center
+				cellsalign: "center", // Cell center
 				cellsrenderer: (row, column, value) =>
 					value
-						? `<span>Rp ${parseInt(value).toLocaleString("id-ID")}</span>`
+						? `<span style="display:block; text-align:center; width:100%;">Rp ${parseInt(
+								value
+						  ).toLocaleString("id-ID")}</span>`
 						: "",
 			},
 			{
 				text: "Total Price",
 				datafield: "total_price",
 				width: 120,
+				align: "center",
+				cellsalign: "center",
 				cellsrenderer: (row, column, value) =>
 					value
-						? `<span>Rp ${parseInt(value).toLocaleString("id-ID")}</span>`
+						? `<span style="display:block; text-align:center; width:100%;">Rp ${parseInt(
+								value
+						  ).toLocaleString("id-ID")}</span>`
 						: "",
 			},
 			{
@@ -71,8 +127,10 @@ $(function () {
 				datafield: "id",
 				editable: false,
 				width: 100,
+				align: "center",
+				cellsalign: "center",
 				cellsrenderer: (row, column, value) =>
-					`<button class="btn-directory" data-id="${value}">📂</button>`,
+					`<button class="btn-directory" data-id="${value}" style="display:block; margin:0 auto;">📂</button>`,
 			},
 		],
 	});
