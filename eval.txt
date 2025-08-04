@@ -5,5 +5,9 @@
 
 
 - buat icon , untuk lihat detail list directroy berdasarkan id jadi nanti muncul pop up akan nge route kemana , buat validasi misal berdsarkan id atau apa nanti akan list button directroy bukan di databse tapi sudah di tentukan sebelumnya 
+berdasarkan id database untuk list routenya 
 
 - postgree sql 
+
+
+revisi baru - ketika klik directory yang muncul hanya pathnya saja : 

@@ -1,5 +1,6 @@
 $(function () {
-	var source = {
+	// --- Source & Data Adapter ---
+	const source = {
 		datatype: "json",
 		datafields: [
 			{ name: "id", type: "string" },
@@ -14,9 +15,9 @@ $(function () {
 		],
 		url: base_url + "index.php/api/products_get",
 	};
+	const dataAdapter = new $.jqx.dataAdapter(source);
 
-	var dataAdapter = new $.jqx.dataAdapter(source);
-
+	// --- Init Grid ---
 	$("#jqxgrid").jqxGrid({
 		width: "100%",
 		height: 600,
@@ -31,89 +32,15 @@ $(function () {
 		selectionmode: "checkbox",
 		showtoolbar: true,
 		rendertoolbar: function (toolbar) {
-			var container = $("<div style='margin: 5px;'></div>");
-			var addButton = $("<button>Tambah Data</button>");
-			var deleteButton = $("<button>Hapus Data</button>");
+			const container = $("<div style='margin: 5px;'></div>");
+			const addButton = $("<button>Tambah Data</button>");
+			const deleteButton = $("<button>Hapus Data</button>");
+			container.append(addButton, deleteButton);
 			toolbar.append(container);
-			container.append(addButton);
-			container.append(deleteButton);
 
-			addButton.on("click", function () {
-				var newrow = {
-					name: "",
-					type: "",
-					calories: "",
-					totalfat: "",
-					protein: "",
-					quantity: "",
-					unit_price: "",
-					total_price: "",
-				};
-				$("#jqxgrid").jqxGrid("addrow", null, newrow);
-				var datainfo = $("#jqxgrid").jqxGrid("getdatainformation");
-				var lastrow = datainfo.rowscount - 1;
-				$("#jqxgrid").jqxGrid("begincelledit", lastrow, "name");
-			});
-
-			deleteButton.on("click", function () {
-				var selectedIndexes = $("#jqxgrid").jqxGrid("getselectedrowindexes");
-				if (!selectedIndexes.length) {
-					alert("Pilih data yang mau dihapus (centang di kiri)!");
-					return;
-				}
-
-				// Ambil semua id yang valid
-				var idsToDelete = [];
-				selectedIndexes.forEach(function (idx) {
-					var rowdata = $("#jqxgrid").jqxGrid("getrowdata", idx);
-					if (rowdata && rowdata.id) idsToDelete.push(rowdata.id);
-				});
-
-				if (!idsToDelete.length) {
-					alert("Tidak ada data valid untuk dihapus!");
-					return;
-				}
-
-				if (confirm("Yakin hapus " + idsToDelete.length + " data ini?")) {
-					var successCount = 0,
-						failCount = 0;
-					idsToDelete.forEach(function (id, idx) {
-						$.ajax({
-							url: base_url + "index.php/api/products_delete/" + id, // api untuk hapus produk
-							type: "DELETE",
-							dataType: "json",
-							success: function (response) {
-								if (response.success) successCount++;
-								else failCount++;
-								// Refresh setelah request terakhir
-								if (idx === idsToDelete.length - 1) {
-									$("#jqxgrid").jqxGrid("updatebounddata");
-									alert(
-										successCount +
-											" data berhasil dihapus, " +
-											failCount +
-											" gagal."
-									);
-								}
-							},
-							error: function () {
-								failCount++;
-								if (idx === idsToDelete.length - 1) {
-									$("#jqxgrid").jqxGrid("updatebounddata");
-									alert(
-										successCount +
-											" data berhasil dihapus, " +
-											failCount +
-											" gagal."
-									);
-								}
-							},
-						});
-					});
-				}
-			});
+			addButton.on("click", handleAddRow);
+			deleteButton.on("click", handleDeleteRows);
 		},
-
 		columns: [
 			{ text: "Name", datafield: "name", width: 200 },
 			{ text: "Type", datafield: "type", width: 180 },
@@ -125,95 +52,177 @@ $(function () {
 				text: "Unit Price",
 				datafield: "unit_price",
 				width: 100,
-				cellsrenderer: function (row, column, value) {
-					if (!value) return "";
-					return (
-						"<span>Rp " + parseInt(value).toLocaleString("id-ID") + "</span>"
-					);
-				},
+				cellsrenderer: (row, column, value) =>
+					value
+						? `<span>Rp ${parseInt(value).toLocaleString("id-ID")}</span>`
+						: "",
 			},
 			{
 				text: "Total Price",
 				datafield: "total_price",
 				width: 120,
-				cellsrenderer: function (row, column, value) {
-					if (!value) return "";
-					return (
-						"<span>Rp " + parseInt(value).toLocaleString("id-ID") + "</span>"
-					);
-				},
+				cellsrenderer: (row, column, value) =>
+					value
+						? `<span>Rp ${parseInt(value).toLocaleString("id-ID")}</span>`
+						: "",
+			},
+			{
+				text: "Directory",
+				datafield: "id",
+				editable: false,
+				width: 100,
+				cellsrenderer: (row, column, value) =>
+					`<button class="btn-directory" data-id="${value}">📂</button>`,
 			},
 		],
 	});
 
+	// Handler Tambah Row
+	function handleAddRow() {
+		const newrow = {
+			name: "",
+			type: "",
+			calories: "",
+			totalfat: "",
+			protein: "",
+			quantity: "",
+			unit_price: "",
+			total_price: "",
+		};
+		$("#jqxgrid").jqxGrid("addrow", null, newrow);
+		const datainfo = $("#jqxgrid").jqxGrid("getdatainformation");
+		const lastrow = datainfo.rowscount - 1;
+		$("#jqxgrid").jqxGrid("begincelledit", lastrow, "name");
+	}
+
+	// Handler Hapus Row
+	function handleDeleteRows() {
+		const selectedIndexes = $("#jqxgrid").jqxGrid("getselectedrowindexes");
+		if (!selectedIndexes.length) {
+			alert("Pilih data yang mau dihapus (centang di kiri)!");
+			return;
+		}
+		const idsToDelete = selectedIndexes
+			.map((idx) => $("#jqxgrid").jqxGrid("getrowdata", idx)?.id)
+			.filter((id) => !!id);
+
+		if (!idsToDelete.length) {
+			alert("Tidak ada data valid untuk dihapus!");
+			return;
+		}
+		if (confirm("Yakin hapus " + idsToDelete.length + " data ini?")) {
+			let successCount = 0,
+				failCount = 0;
+			idsToDelete.forEach((id, idx) => {
+				$.ajax({
+					url: base_url + "index.php/api/products_delete/" + id,
+					type: "DELETE",
+					dataType: "json",
+					success: (response) => {
+						if (response.success) successCount++;
+						else failCount++;
+						if (idx === idsToDelete.length - 1) {
+							$("#jqxgrid").jqxGrid("updatebounddata");
+							alert(
+								successCount +
+									" data berhasil dihapus, " +
+									failCount +
+									" gagal."
+							);
+						}
+					},
+					error: () => {
+						failCount++;
+						if (idx === idsToDelete.length - 1) {
+							$("#jqxgrid").jqxGrid("updatebounddata");
+							alert(
+								successCount +
+									" data berhasil dihapus, " +
+									failCount +
+									" gagal."
+							);
+						}
+					},
+				});
+			});
+		}
+	}
+
+	// Directory Button Handler pakai event delegation (lebih reliable)
+	$(document).on("click", ".btn-directory", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		const id = $(this).data("id");
+		showDirectoryPopup(id);
+	});
+
+	// Fungsi showDirectoryPopup
+	window.showDirectoryPopup = function (id) {
+		const dirs = directoryMap[id] || [];
+		if (!dirs.length) {
+			Swal.fire("Tidak ada directory/aksi untuk produk ini.");
+			return;
+		}
+		let html = '<ul style="text-align:left">';
+		dirs.forEach((d) => {
+			html += `<li>${d.url}</li>`;
+		});
+		html += "</ul>";
+		Swal.fire({
+			title: "Path Directory",
+			html,
+			showConfirmButton: true,
+			confirmButtonText: "Tutup",
+		});
+	};
+
+	// Page Size Handler
 	$("#jqxgrid").on("pagesizechanged", function (event) {
-		var args = event.args;
-		var newPageSize = args.pagesize;
-		var dataInfo = $("#jqxgrid").jqxGrid("getdatainformation");
-		var totalRows = dataInfo.rowscount;
-
-		// --- console.log di dalam handler ---
-		console.log("pagesize:", newPageSize, "totalRows:", totalRows);
-
+		const args = event.args;
+		const newPageSize = args.pagesize;
+		const totalRows = $("#jqxgrid").jqxGrid("getdatainformation").rowscount;
 		if (newPageSize === "All" || newPageSize === 0 || newPageSize === "0") {
 			$("#jqxgrid").jqxGrid({ pagesize: totalRows });
 		}
 	});
 
+	// Logic Update Otomatis Kolom (Total, Gram)
 	$("#jqxgrid").on("cellvaluechanged", function (event) {
-		var datafield = event.args.datafield;
-		var rowindex = event.args.rowindex;
-		var value = event.args.value;
-		var rowdata = $("#jqxgrid").jqxGrid("getrowdata", rowindex);
+		const { datafield, rowindex, value } = event.args;
+		const rowdata = $("#jqxgrid").jqxGrid("getrowdata", rowindex);
 
-		switch (datafield) {
-			case "totalfat":
-			case "protein":
-				if (value && !value.toString().toLowerCase().endsWith("g")) {
-					$("#jqxgrid").jqxGrid(
-						"setcellvalue",
-						rowindex,
-						datafield,
-						value + "g"
-					);
-				}
-				break;
-			case "quantity":
-			case "unit_price":
-				var qty = parseInt(rowdata.quantity) || 0;
-				var unit = parseInt(rowdata.unit_price) || 0;
-				$("#jqxgrid").jqxGrid(
-					"setcellvalue",
-					rowindex,
-					"total_price",
-					qty * unit
-				);
-				break;
-
-			default:
-				break;
+		if (["totalfat", "protein"].includes(datafield)) {
+			if (value && !value.toString().toLowerCase().endsWith("g")) {
+				$("#jqxgrid").jqxGrid("setcellvalue", rowindex, datafield, value + "g");
+			}
+		} else if (["quantity", "unit_price"].includes(datafield)) {
+			const qty = parseInt(rowdata.quantity) || 0;
+			const unit = parseInt(rowdata.unit_price) || 0;
+			$("#jqxgrid").jqxGrid(
+				"setcellvalue",
+				rowindex,
+				"total_price",
+				qty * unit
+			);
 		}
 	});
 
+	// Logic Add / Edit
 	$("#jqxgrid").on("cellendedit", function (event) {
-		var rowindex = event.args.rowindex;
-		var rowdata = $("#jqxgrid").jqxGrid("getrowdata", rowindex);
+		const rowindex = event.args.rowindex;
+		const rowdata = $("#jqxgrid").jqxGrid("getrowdata", rowindex);
+		const kurang = !rowdata["name"];
 
-		// Hanya cek name
-		var kurang = [];
-		if (!rowdata["name"] || rowdata["name"] === "") kurang.push("name");
-
-		// Kalau name kosong, blok tambah
-		if ((!rowdata.id || rowdata.id === "") && kurang.length > 0) {
-			setTimeout(function () {
+		if ((!rowdata.id || rowdata.id === "") && kurang) {
+			setTimeout(() => {
 				$("#jqxgrid").jqxGrid("begincelledit", rowindex, "name");
 			}, 10);
 			alert("Field berikut wajib diisi: name");
 			return;
 		}
 
-		// Kalau name terisi, boleh add
-		if ((!rowdata.id || rowdata.id === "") && kurang.length === 0) {
+		// Jika row baru (insert)
+		if ((!rowdata.id || rowdata.id === "") && !kurang) {
 			rowdata.quantity = !isNaN(rowdata.quantity)
 				? parseInt(rowdata.quantity)
 				: 0;
@@ -221,9 +230,8 @@ $(function () {
 				? parseInt(rowdata.unit_price)
 				: 0;
 			rowdata.total_price = rowdata.quantity * rowdata.unit_price;
-
 			$.ajax({
-				url: base_url + "index.php/api/products_add", // api untuk tambah produk
+				url: base_url + "index.php/api/products_add",
 				type: "POST",
 				data: rowdata,
 				dataType: "json",
@@ -242,6 +250,7 @@ $(function () {
 			return;
 		}
 
+		// Jika update
 		if (rowdata.id) {
 			rowdata.quantity = !isNaN(rowdata.quantity)
 				? parseInt(rowdata.quantity)
@@ -250,9 +259,8 @@ $(function () {
 				? parseInt(rowdata.unit_price)
 				: 0;
 			rowdata.total_price = rowdata.quantity * rowdata.unit_price;
-
 			$.ajax({
-				url: base_url + "index.php/api/products_update/" + rowdata.id, // API untuk update produk
+				url: base_url + "index.php/api/products_update/" + rowdata.id,
 				type: "PUT",
 				data: JSON.stringify(rowdata),
 				dataType: "json",
