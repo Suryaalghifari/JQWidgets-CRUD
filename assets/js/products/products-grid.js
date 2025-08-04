@@ -221,7 +221,8 @@ $(function () {
 			Swal.fire("Tidak ada directory/aksi untuk produk ini.");
 			return;
 		}
-		let html = '<ul style="text-align:left">';
+		let html =
+			'<ul style="text-align:center; list-style:none; padding-left:0;">';
 		dirs.forEach((d) => {
 			html += `<li>${d.url}</li>`;
 		});
