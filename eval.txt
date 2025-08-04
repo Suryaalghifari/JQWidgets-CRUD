@@ -1,0 +1,9 @@
+- colom harus bisal all tidak hanya sampe 20 saja karena jika sampe 20 saja maka tidak bisa menambah add coloms
+
+
+- Revisi saat User pertama isi , hanya field namen saja yang di validasi , jadi misal field name belum di isi tapi mau isi field lain maka tidak bisa kecuali kebalikannya 
+
+
+- buat icon , untuk lihat detail list directroy berdasarkan id jadi nanti muncul pop up akan nge route kemana , buat validasi misal berdsarkan id atau apa nanti akan list button directroy bukan di databse tapi sudah di tentukan sebelumnya 
+
+- postgree sql 

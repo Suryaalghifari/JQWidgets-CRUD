@@ -24,15 +24,14 @@ class Api extends CI_Controller
     public function products_add() // api untuk tambah produk baru
     {
         $data = $this->input->post();
-        $required = ['name', 'type', 'calories', 'totalfat', 'protein', 'quantity', 'unit_price'];
-        foreach ($required as $field) {
-            if (empty($data[$field]) && $data[$field] !== "0") {
-                echo json_encode([
-                    'success' => false, 
-                    'message' => ucfirst($field) . ' wajib diisi'
-                ]);
-                return;
-            }
+
+        
+        if (empty($data['name'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Name wajib diisi'
+            ]);
+            return;
         }
 
         $id = $this->Product_model->insert($data);
@@ -42,6 +41,7 @@ class Api extends CI_Controller
             echo json_encode(['success' => false, 'message' => 'Gagal insert data']);
         }
     }
+
 
     public function products_update($id = null) // api untuk update produk berdasarkan ID
     {

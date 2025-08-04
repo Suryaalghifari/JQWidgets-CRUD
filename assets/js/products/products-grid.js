@@ -22,6 +22,8 @@ $(function () {
 		height: 600,
 		source: dataAdapter,
 		pageable: true,
+		pagesizeoptions: ["5", "10", "20", "50", "100"],
+		pagesize: 20,
 		sortable: true,
 		filterable: true,
 		editable: true,
@@ -144,6 +146,20 @@ $(function () {
 		],
 	});
 
+	$("#jqxgrid").on("pagesizechanged", function (event) {
+		var args = event.args;
+		var newPageSize = args.pagesize;
+		var dataInfo = $("#jqxgrid").jqxGrid("getdatainformation");
+		var totalRows = dataInfo.rowscount;
+
+		// --- console.log di dalam handler ---
+		console.log("pagesize:", newPageSize, "totalRows:", totalRows);
+
+		if (newPageSize === "All" || newPageSize === 0 || newPageSize === "0") {
+			$("#jqxgrid").jqxGrid({ pagesize: totalRows });
+		}
+	});
+
 	$("#jqxgrid").on("cellvaluechanged", function (event) {
 		var datafield = event.args.datafield;
 		var rowindex = event.args.rowindex;
@@ -181,43 +197,22 @@ $(function () {
 
 	$("#jqxgrid").on("cellendedit", function (event) {
 		var rowindex = event.args.rowindex;
-		var datafield = event.args.datafield;
 		var rowdata = $("#jqxgrid").jqxGrid("getrowdata", rowindex);
 
-		var fields = [
-			"name",
-			"type",
-			"calories",
-			"totalfat",
-			"protein",
-			"quantity",
-			"unit_price",
-		];
+		// Hanya cek name
 		var kurang = [];
-		fields.forEach(function (field) {
-			switch (field) {
-				case "quantity":
-				case "unit_price":
-					if (!rowdata[field] || isNaN(rowdata[field]) || rowdata[field] <= 0)
-						kurang.push(field);
-					break;
-				default:
-					if (!rowdata[field] || rowdata[field] === "") kurang.push(field);
-			}
-		});
+		if (!rowdata["name"] || rowdata["name"] === "") kurang.push("name");
 
-		// ---[Fokus ke cell kosong jika field wajib belum lengkap]---
+		// Kalau name kosong, blok tambah
 		if ((!rowdata.id || rowdata.id === "") && kurang.length > 0) {
-			var nextField = kurang[0];
 			setTimeout(function () {
-				$("#jqxgrid").jqxGrid("begincelledit", rowindex, nextField);
+				$("#jqxgrid").jqxGrid("begincelledit", rowindex, "name");
 			}, 10);
-			if (datafield === nextField) {
-				alert("Field berikut wajib diisi: " + nextField);
-			}
+			alert("Field berikut wajib diisi: name");
 			return;
 		}
 
+		// Kalau name terisi, boleh add
 		if ((!rowdata.id || rowdata.id === "") && kurang.length === 0) {
 			rowdata.quantity = !isNaN(rowdata.quantity)
 				? parseInt(rowdata.quantity)
