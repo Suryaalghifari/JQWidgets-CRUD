@@ -1,5 +1,4 @@
 $(function () {
-	// ---[1. Sumber data dan field grid]---
 	var source = {
 		datatype: "json",
 		datafields: [
@@ -27,7 +26,7 @@ $(function () {
 		filterable: true,
 		editable: true,
 		columnsresize: true,
-		selectionmode: "checkbox", // multi select
+		selectionmode: "checkbox",
 		showtoolbar: true,
 		rendertoolbar: function (toolbar) {
 			var container = $("<div style='margin: 5px;'></div>");

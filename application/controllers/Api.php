@@ -64,7 +64,8 @@ class Api extends CI_Controller
             echo json_encode(['success' => false, 'message' => 'Gagal update data']);
         }
     }
-    public function products_delete($id = null)
+    
+    public function products_delete($id = null)// api untuk hapus produk berdasarkan ID
     {
         if (!$id) {
             echo json_encode(['success' => false, 'message' => 'ID wajib ada']);
