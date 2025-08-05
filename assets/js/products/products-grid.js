@@ -13,7 +13,7 @@ $(function () {
 			{ name: "unit_price", type: "string" },
 			{ name: "total_price", type: "string" },
 		],
-		url: base_url + "index.php/api/products_get",
+		url: base_url + "index.php/api/products_get", // API endpoint to fetch product
 	};
 	const dataAdapter = new $.jqx.dataAdapter(source);
 
@@ -100,8 +100,8 @@ $(function () {
 				text: "Unit Price",
 				datafield: "unit_price",
 				width: 100,
-				align: "center", // Header center
-				cellsalign: "center", // Cell center
+				align: "center",
+				cellsalign: "center",
 				cellsrenderer: (row, column, value) =>
 					value
 						? `<span style="display:block; text-align:center; width:100%;">Rp ${parseInt(
@@ -153,7 +153,6 @@ $(function () {
 		$("#jqxgrid").jqxGrid("begincelledit", lastrow, "name");
 	}
 
-	// Handler Hapus Row
 	function handleDeleteRows() {
 		const selectedIndexes = $("#jqxgrid").jqxGrid("getselectedrowindexes");
 		if (!selectedIndexes.length) {
@@ -173,7 +172,7 @@ $(function () {
 				failCount = 0;
 			idsToDelete.forEach((id, idx) => {
 				$.ajax({
-					url: base_url + "index.php/api/products_delete/" + id,
+					url: base_url + "index.php/api/products_delete/" + id, // API endpoint to delete product
 					type: "DELETE",
 					dataType: "json",
 					success: (response) => {
@@ -206,7 +205,7 @@ $(function () {
 		}
 	}
 
-	// Directory Button Handler pakai event delegation (lebih reliable)
+	// directory map handler by product ID
 	$(document).on("click", ".btn-directory", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -214,7 +213,7 @@ $(function () {
 		showDirectoryPopup(id);
 	});
 
-	// Fungsi showDirectoryPopup
+	// Fungsi showDirectoryPopup by product ID
 	window.showDirectoryPopup = function (id) {
 		const dirs = directoryMap[id] || [];
 		if (!dirs.length) {
@@ -235,7 +234,6 @@ $(function () {
 		});
 	};
 
-	// Page Size Handler
 	$("#jqxgrid").on("pagesizechanged", function (event) {
 		const args = event.args;
 		const newPageSize = args.pagesize;
@@ -245,7 +243,6 @@ $(function () {
 		}
 	});
 
-	// Logic Update Otomatis Kolom (Total, Gram)
 	$("#jqxgrid").on("cellvaluechanged", function (event) {
 		const { datafield, rowindex, value } = event.args;
 		const rowdata = $("#jqxgrid").jqxGrid("getrowdata", rowindex);
@@ -280,7 +277,6 @@ $(function () {
 			return;
 		}
 
-		// Jika row baru (insert)
 		if ((!rowdata.id || rowdata.id === "") && !kurang) {
 			rowdata.quantity = !isNaN(rowdata.quantity)
 				? parseInt(rowdata.quantity)
@@ -290,7 +286,7 @@ $(function () {
 				: 0;
 			rowdata.total_price = rowdata.quantity * rowdata.unit_price;
 			$.ajax({
-				url: base_url + "index.php/api/products_add",
+				url: base_url + "index.php/api/products_add", // API endpoint to add product
 				type: "POST",
 				data: rowdata,
 				dataType: "json",
@@ -319,7 +315,7 @@ $(function () {
 				: 0;
 			rowdata.total_price = rowdata.quantity * rowdata.unit_price;
 			$.ajax({
-				url: base_url + "index.php/api/products_update/" + rowdata.id,
+				url: base_url + "index.php/api/products_update/" + rowdata.id, // API endpoint to update product
 				type: "PUT",
 				data: JSON.stringify(rowdata),
 				dataType: "json",
