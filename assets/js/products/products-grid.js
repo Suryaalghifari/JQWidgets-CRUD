@@ -223,12 +223,13 @@ $(function () {
 		let html =
 			'<ul style="text-align:center; list-style:none; padding-left:0;">';
 		dirs.forEach((d) => {
-			html += `<li>${d.url}</li>`;
+			html += `<li><strong>${d.label}</strong>:<br/><code>${d.url}</code></li>`;
 		});
 		html += "</ul>";
 		Swal.fire({
 			title: "Path Directory",
 			html,
+			width: 600,
 			showConfirmButton: true,
 			confirmButtonText: "Tutup",
 		});
